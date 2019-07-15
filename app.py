@@ -27,3 +27,22 @@ class TwitterBot():
         p_word.send_keys(self.password)
         p_word.send_keys(Keys.RETURN)
         time.sleep(3)
+
+    def like_tweet(self, hashtag):
+        bot = self.bot
+        bot.get("https://twitter.com/search?q=" + hashtag + "&src=typd")
+        time.sleep(3)
+        for i in range(10):
+            bot.execute_script('window.scrollTo(0,document.body.scrollHeight)')    
+            time.sleep(4)
+            tweets = bot.find_elements_by_class_name('tweet')
+            links  = [elem.get_attribute('data-permalink-path')
+                        for elem in tweets]
+            for link in links:
+                bot.get('https://twitter.com' + link)
+                try:
+                    bot.find_element_by_class_name('HeartAnimation').click()
+                    time.sleep(60)
+                except Exception as e:
+                    print(e)
+                    time.sleep(120)                
